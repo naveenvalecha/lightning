@@ -141,6 +141,7 @@
         "drupal/entity_browser": "8.1.0-alpha5",
         "drupal/views_infinite_scroll": "8.1.0",
         "drupal/media_entity_document": "^8.1.0",
-        "drupal/video_embed_field": "^8.1.0"
+        "drupal/video_embed_field": "^8.1.0",
+        "drupal/crop": "^8.1.0"
     }
 }
