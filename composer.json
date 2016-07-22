@@ -61,8 +61,12 @@
                 "https://www.drupal.org/files/issues/ctools--8.x-3.0-alpha26--1fe3649.patch"
             },
             "drupal/entity_browser": {
+                "Mega patch 8.x-1.0-alpha6 to 3d2b6a":
+                "https://www.drupal.org/files/issues/entity_browser-megapatch-8.x-1.0-alpha6--3d2b6a4cd44657ec495539273243c308c05b2908.patch",
                 "2738843 - The view widget should support radio buttons":
-                "https://www.drupal.org/files/issues/2738843-7.patch"
+                "https://www.drupal.org/files/issues/2738843-6.patch",
+                "2769401 - Add relationship support to the Views bulk select field":
+                "https://www.drupal.org/files/issues/entity-browser-2769401-2.patch"
             },
             "drupal/media_entity_twitter": {
                 "2764411 - Tweets embedded in CKEditor do not load when selected from Entity Browser":
