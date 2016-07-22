@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "aff990ae36e687a6c68f400beea2696b",
-    "content-hash": "f83ed4bd448021d06221aa0b6887bcfb",
+    "hash": "ed90426543b762b1a7fa4bfd1c41221f",
+    "content-hash": "0438fd8a7472d3d341c2cb2563fd391f",
     "packages": [
         {
             "name": "composer/installers",
@@ -1102,6 +1102,9 @@
             "extra": {
                 "branch-alias": {
                     "dev-8.x-1.x": "8.1.x-dev"
+                },
+                "patches_applied": {
+                    "2767573 - Use Entity browser's form element": "https://www.drupal.org/files/issues/2767573_2.patch"
                 }
             },
             "notification-url": "https://packagist.drupal-composer.org/downloads/",
