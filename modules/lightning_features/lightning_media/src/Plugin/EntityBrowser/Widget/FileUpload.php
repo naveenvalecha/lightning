@@ -9,6 +9,7 @@ use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Utility\Token;
+use Drupal\entity_browser\WidgetValidationManager;
 use Drupal\file\Element\ManagedFile;
 use Drupal\lightning_media\BundleResolverInterface;
 use Drupal\lightning_media\SourceFieldTrait;
@@ -46,7 +47,7 @@ class FileUpload extends EntityFormProxy {
   protected $fileSystem;
 
   /**
-   * EmbedCode constructor.
+   * FileUpload constructor.
    *
    * @param array $configuration
    *   Plugin configuration.
@@ -58,6 +59,8 @@ class FileUpload extends EntityFormProxy {
    *   The event dispatcher.
    * @param EntityManagerInterface $entity_manager
    *   The entity manager service.
+   * @param WidgetValidationManager $widget_validation_manager
+   *   The widget validation manager.
    * @param BundleResolverInterface $bundle_resolver
    *   The media bundle resolver.
    * @param AccountInterface $current_user
@@ -67,8 +70,8 @@ class FileUpload extends EntityFormProxy {
    * @param FileSystemInterface $file_system
    *   The file system service.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, EventDispatcherInterface $event_dispatcher, EntityManagerInterface $entity_manager, BundleResolverInterface $bundle_resolver, AccountInterface $current_user, Token $token, FileSystemInterface $file_system) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition, $event_dispatcher, $entity_manager, $bundle_resolver, $current_user);
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EventDispatcherInterface $event_dispatcher, EntityManagerInterface $entity_manager, WidgetValidationManager $widget_validation_manager, BundleResolverInterface $bundle_resolver, AccountInterface $current_user, Token $token, FileSystemInterface $file_system) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $event_dispatcher, $entity_manager, $widget_validation_manager, $bundle_resolver, $current_user);
     $this->token = $token;
     $this->fileSystem = $file_system;
     $this->fieldStorage = $entity_manager->getStorage('field_config');
@@ -86,6 +89,7 @@ class FileUpload extends EntityFormProxy {
       $plugin_definition,
       $container->get('event_dispatcher'),
       $container->get('entity.manager'),
+      $container->get('plugin.manager.entity_browser.widget_validation'),
       $container->get('plugin.manager.lightning_media.bundle_resolver')->createInstance($bundle_resolver),
       $container->get('current_user'),
       $container->get('token'),
