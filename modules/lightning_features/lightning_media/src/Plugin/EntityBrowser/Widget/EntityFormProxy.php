@@ -91,16 +91,15 @@ abstract class EntityFormProxy extends WidgetBase {
    * {@inheritdoc}
    */
   public function getForm(array &$original_form, FormStateInterface $form_state, array $additional_widget_parameters) {
-    $form = array(
-      'entity' => array(
-        '#markup' => NULL,
-      ),
-      'ief_target' => array(
-        '#type' => 'container',
-        '#id' => 'ief-target',
-        '#weight' => 10,
-      ),
-    );
+    $form = parent::getForm($original_form, $form_state, $additional_widget_parameters);
+
+    $form['entity']['#markup'] = NULL;
+
+    $form['ief_target'] = [
+      '#type' => 'container',
+      '#id' => 'ief-target',
+      '#weight' => 10,
+    ];
 
     $input = $this->getInputValue($form_state);
     if ($input) {
@@ -128,7 +127,7 @@ abstract class EntityFormProxy extends WidgetBase {
    */
   protected function prepareEntities(array $form, FormStateInterface $form_state) {
     $entity = $form['widget']['entity']['#entity'];
-    return [$entity];
+    return $entity ? [$entity] : [];
   }
 
   /**

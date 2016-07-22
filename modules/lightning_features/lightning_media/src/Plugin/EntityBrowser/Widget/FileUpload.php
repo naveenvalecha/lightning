@@ -110,6 +110,14 @@ class FileUpload extends EntityFormProxy {
   /**
    * {@inheritdoc}
    */
+  protected function prepareEntities(array $form, FormStateInterface $form_state) {
+    $entities = parent::prepareEntities($form, $form_state);
+    return array_map([$this, 'getFile'], $entities);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getForm(array &$original_form, FormStateInterface $form_state, array $additional_widget_parameters) {
     $form = parent::getForm($original_form, $form_state, $additional_widget_parameters);
 
@@ -130,13 +138,19 @@ class FileUpload extends EntityFormProxy {
    */
   public function submit(array &$element, array &$form, FormStateInterface $form_state) {
     /** @var \Drupal\media_entity\MediaInterface $entity */
-    $entity = $form['widget']['entity']['#entity'];
+    $entity = $element['entity']['#entity'];
+    // OK, so...the bug here is that the media entity, despite having its
+    // input values, is not saved.
+    foreach ($element['entity']['#ief_element_submit'] as $submit_handler) {
+      $submit_handler = implode('::', $submit_handler);
+      call_user_func_array($submit_handler, [&$element['entity'], $form_state]);
+    }
 
     $file = $this->getFile($entity);
     $file->setPermanent();
     $file->save();
 
-    parent::submit($element, $form, $form_state);
+    $this->selectEntities([$file], $form_state);
   }
 
   /**
