@@ -112,7 +112,13 @@ class FileUpload extends EntityFormProxy {
    */
   protected function prepareEntities(array $form, FormStateInterface $form_state) {
     $entities = parent::prepareEntities($form, $form_state);
-    return array_map([$this, 'getFile'], $entities);
+
+    if ($this->configuration['return_file']) {
+      return array_map([$this, 'getFile'], $entities);
+    }
+    else {
+      return $entities;
+    }
   }
 
   /**
@@ -139,18 +145,15 @@ class FileUpload extends EntityFormProxy {
   public function submit(array &$element, array &$form, FormStateInterface $form_state) {
     /** @var \Drupal\media_entity\MediaInterface $entity */
     $entity = $element['entity']['#entity'];
-    // OK, so...the bug here is that the media entity, despite having its
-    // input values, is not saved.
-    foreach ($element['entity']['#ief_element_submit'] as $submit_handler) {
-      $submit_handler = implode('::', $submit_handler);
-      call_user_func_array($submit_handler, [&$element['entity'], $form_state]);
-    }
 
     $file = $this->getFile($entity);
     $file->setPermanent();
     $file->save();
 
-    $this->selectEntities([$file], $form_state);
+    $selection = [
+      $this->configuration['return_file'] ? $file : $entity,
+    ];
+    $this->selectEntities($selection, $form_state);
   }
 
   /**
@@ -310,6 +313,30 @@ class FileUpload extends EntityFormProxy {
 
     $command = new InvokeCommand($selector, 'empty');
     return $response->addCommand($command);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function defaultConfiguration() {
+    $configuration = parent::defaultConfiguration();
+    $configuration['return_file'] = FALSE;
+    return $configuration;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+    $form = parent::buildConfigurationForm($form, $form_state);
+
+    $form['return_file'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Return source file entity'),
+      '#default_value' => $this->configuration['return_file'],
+      '#description' => $this->t('If checked, the source file(s) of the media entity will be returned from this widget.'),
+    ];
+    return $form;
   }
 
 }

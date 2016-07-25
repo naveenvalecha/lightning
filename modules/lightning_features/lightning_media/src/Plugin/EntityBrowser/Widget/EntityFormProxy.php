@@ -8,6 +8,7 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\entity_browser\WidgetBase;
 use Drupal\entity_browser\WidgetValidationManager;
 use Drupal\inline_entity_form\Element\InlineEntityForm;
+use Drupal\inline_entity_form\ElementSubmit;
 use Drupal\lightning_media\BundleResolverInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -116,6 +117,8 @@ abstract class EntityFormProxy extends WidgetBase {
             [$this, 'processEntityForm'],
           ),
         );
+        // Without this, IEF won't know where to hook into the widget.
+        ElementSubmit::addCallback($form['actions']['submit'], $original_form);
       }
     }
 
