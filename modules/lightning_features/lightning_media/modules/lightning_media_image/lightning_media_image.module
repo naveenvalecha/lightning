@@ -1,0 +1,45 @@
+<?php
+
+/**
+ * @file
+ * Support for image media assets in Lightning.
+ */
+
+use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
+use Drupal\field\Entity\FieldConfig;
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ */
+function lightning_media_image_entity_form_display_presave(EntityFormDisplayInterface $display) {
+  if ($display->isNew()) {
+    return;
+  }
+
+  /** @var EntityFormDisplayInterface $original */
+  $original = \Drupal::entityTypeManager()
+    ->getStorage('entity_form_display')
+    ->loadUnchanged($display->id());
+
+  $new_components = array_diff_key($display->getComponents(), $original->getComponents());
+  foreach ($new_components as $component_id => $component) {
+    $field = FieldConfig::load(
+      $display->getTargetEntityTypeId() . '.' . $display->getTargetBundle() . '.' . $component_id
+    );
+
+    if ($field->getType() == 'image') {
+      $display->setComponent($component_id, [
+        'type' => 'entity_browser_file',
+        'weight' => $component['weight'],
+        'settings' => [
+          'entity_browser' => 'image_browser',
+          'field_widget_edit' => TRUE,
+          'field_widget_remove' => TRUE,
+          'view_mode' => 'default',
+          'preview_image_style' => 'thumbnail',
+          'open' => TRUE,
+        ],
+      ]);
+    }
+  }
+}
