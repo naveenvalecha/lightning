@@ -118,7 +118,10 @@ abstract class EntityFormProxy extends WidgetBase {
           ),
         );
         // Without this, IEF won't know where to hook into the widget.
-        ElementSubmit::addCallback($form['actions']['submit'], $original_form);
+        // Don't pass $original_form as the second argument to addCallback(),
+        // because it's not just the entity browser part of the form, not the
+        // actual complete form.
+        ElementSubmit::addCallback($form['actions']['submit'], $form_state->getCompleteForm());
       }
     }
 
